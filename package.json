@@ -1,0 +1,14 @@
+{
+  "name": "stulidayfinal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.php",
+  "scripts": {
+    "start": "browser-sync start --proxy localhost/stuliday --files * --no-notify"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.26.12"
+  }
+}
