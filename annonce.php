@@ -4,13 +4,13 @@ require 'inc/functions.php';
 require 'assets/head.php';
 require 'assets/nav.php';
 
-if (isset($_GET['id'])) {
+if (!empty($_GET['id'])) {
     $annonce = getAnnonce($_GET['id']);
     if (!empty($annonce) && isset($_SESSION['id']) && $_SESSION['id'] == $annonce['author']) {
         $self = true;
     }
     if (isset($_GET['book'])) {
-        if (!isset($self)) {
+        if (!isset($self) && isset($_SESSION['id'])) {
             $bookerror = tryBook($annonce['id'],$_SESSION['id']);
         } else {
             $bookerror = "Une erreur s'est produite. Vous ne pouvez pas effectuer cette action.";
@@ -40,7 +40,7 @@ if (isset($_GET['id'])) {
                     <img src="assets/uploads/<?=$annonce['image_url']?>" alt="">
                     <h3><?=$annonce['title']?></h3>
                     <span class="infos"><?= $annonce['category']." | ".$annonce['address']." à ".$annonce['city']?></span>
-                    <span class="proprietaire"><?= $annonce['first_name'].'  '.$annonce['last_name'] ?> (voir profil)</span>
+                    <span class="proprietaire"><?= $annonce['first_name'].'  '.$annonce['last_name'] ?></span>
                     <p><?= $annonce['description'] ?></p>
                     <span class="date"><?= 'Disponible du '.displayDate($annonce['start_date']).' au '.displayDate($annonce['end_date']) ?></span>
                     <span class="price"><?= $annonce['price'].'€ / nuit'?></span>

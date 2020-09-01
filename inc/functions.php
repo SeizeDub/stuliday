@@ -41,7 +41,6 @@ function trySignup() {
                     $sth = $db->prepare("INSERT INTO users(first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
                     if ($sth->execute([$input_first_name, $input_last_name, $input_email, $input_password])) {
                         $_SESSION['id'] = $db->lastInsertId();
-                        $_SESSION['email'] = $input_email;
                         header('Location: annonces.php');
                         exit;
                     } else {
@@ -76,7 +75,6 @@ function tryLogin() {
                     $user_password = $user['password'];
                     if(password_verify($input_password, $user_password)) {
                         $_SESSION['id'] = $user_id;
-                        $_SESSION['email'] = $user_email;
                         header('Location: annonces.php');
                         exit;
                     } else {
@@ -143,8 +141,8 @@ function displayAllAnnonces() {
         } else {
             $sql = "SELECT * FROM annonces WHERE booked IS FALSE AND DATE(end_date) > DATE(NOW())";
         }
-        if ($sql = $db->query($sql)) {
-            if ($annonces = $sql->fetchAll(PDO::FETCH_ASSOC)) {
+        if ($sth = $db->query($sql)) {
+            if ($annonces = $sth->fetchAll(PDO::FETCH_ASSOC)) {
                 foreach($annonces as $annonce) {
                     ?>
                     <article class="annonce-article">
@@ -182,8 +180,8 @@ function displayMyAnnonces() {
         } else {
             $sql = "SELECT * FROM annonces WHERE DATE(end_date) >= DATE(NOW()) AND author = $id";
         }
-        if ($sql = $db->query($sql)) {
-            if ($annonces = $sql->fetchAll(PDO::FETCH_ASSOC)) {
+        if ($sth = $db->query($sql)) {
+            if ($annonces = $sth->fetchAll(PDO::FETCH_ASSOC)) {
                 foreach($annonces as $annonce) {
                     ?>
                     <article class="annonce-article">
@@ -393,5 +391,80 @@ function modifyAnnonce($id, $url) {
     } else {
         return "Veuillez remplir tous les champs.";
     }
+}
+
+function updateUser($user) {
+    global $db;
+    if (!$db) {
+        return "Une erreur s'est produite. Veuillez réessayer ultérieurement.";
+    }
+    $input_first_name = htmlspecialchars($_POST['first_name']);
+    $input_last_name = htmlspecialchars($_POST['last_name']);
+    $input_email = htmlspecialchars($_POST['email']);
+    $input_password = htmlspecialchars($_POST['password']);
+    $input_new_password = htmlspecialchars($_POST['new_password']);
+    $input_new_password2 = htmlspecialchars($_POST['new_password2']);
+    
+    if (empty($input_first_name) || empty($input_last_name) || empty($input_email) || empty($input_password)) {
+        return "Veuillez remplir tous les champs obligatoires.";
+    }
+    if (!password_verify($input_password, $user['password'])) {
+        return "Mauvais mot de passe.";
+    }
+    if ($input_email != $user['email']) {
+        if (!$sql = $db->query("SELECT * FROM users WHERE email = '$input_email'")) {
+            return "Une erreur s'est produite. Veuillez réessayer ultérieurement.";
+        }
+        if($sql->rowCount() != 0) {
+            return "Il y a déjà un compte possédant cet e-mail.";
+        }
+        $changeMail = true;
+    }
+    if (!empty($input_new_password)) {
+        if ($input_new_password != $input_new_password2) {
+            return "Les nouveaux mots de passe ne concordent pas.";
+        }
+        $changePassword = true;
+        $input_new_password = password_hash($input_new_password, PASSWORD_DEFAULT);
+    }
+    if (isset($changeMail)) {
+        if (isset($changePassword)) {
+            $sth = $db->prepare("UPDATE users SET first_name = ?, last_name = ?, email = ?, password = ?");
+            if (!$sth->execute([$input_first_name, $input_last_name, $input_email, $input_new_password])) {
+                return "Une erreur s'est produite. Veuillez réessayer ultérieurement.";
+            }
+        } else {
+            $sth = $db->prepare("UPDATE users SET first_name = ?, last_name = ?, email = ?");
+            if (!$sth->execute([$input_first_name, $input_last_name, $input_email])) {
+                return "Une erreur s'est produite. Veuillez réessayer ultérieurement.";
+            }
+        }
+    } else {
+        if (isset($changePassword)) {
+            $sth = $db->prepare("UPDATE users SET first_name = ?, last_name = ?, password = ?");
+            if (!$sth->execute([$input_first_name, $input_last_name, $input_new_password])) {
+                return "Une erreur s'est produite. Veuillez réessayer ultérieurement.";
+            }
+        } else {
+            $sth = $db->prepare("UPDATE users SET first_name = ?, last_name = ?");
+            if (!$sth->execute([$input_first_name, $input_last_name])) {
+                return "Une erreur s'est produite. Veuillez réessayer ultérieurement.";
+            }
+        }
+    }
+    header('Location: account.php');
+    exit;
+}
+
+function getMyReservations($user) {
+    global $db;
+    if ($db) {
+        $sql = "SELECT r.id AS id_reservation, r.id_annonce, r.id_user, a.* FROM reservations r LEFT JOIN annonces a ON r.id_annonce = a.id WHERE r.id_user = $user";
+        if ($sth = $db->query($sql)) {
+            $annonces = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $annonces;
+        }
+    }
+    return 'error';
 }
 ?>

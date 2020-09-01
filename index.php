@@ -11,7 +11,7 @@ require 'assets/nav.php';
     <div>
         <a class="main-button" href="annonces.php">Voir les annonces</a>
         <?php if (isset($_SESSION['id'])) {?>
-        <a class="main-button" href="mes-reservations.php">Mes reservations</a>
+        <a class="main-button" href="mes-reservations.php">Mes réservations</a>
         <?php } ?>
     </div>
 </section>

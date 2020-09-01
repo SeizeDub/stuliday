@@ -245,12 +245,23 @@ p {
     display : block;
     margin-top : 20px;
 }
-#annonce .proprietaire {
-    display : block;
+.proprietaire {
+    display : flex;
+    align-items : center;
     margin-top : 10px;
     margin-bottom : 10px;
     text-decoration : underline;
 }
+
+.proprietaire::before {
+    content : '';
+    display : flex;
+    height : 2rem;
+    width : 2rem;
+    margin-right : 1rem;
+    background : url('../img/profile.png') center / cover;
+}
+
 #login form {
     border-bottom : 2px dashed lightgrey;
 }
@@ -327,6 +338,7 @@ input:focus {
     margin-bottom : 40px;
     display : block;
 }
+
 
 
 

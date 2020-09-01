@@ -15,21 +15,24 @@ if (!empty($_GET['id'])) {
         $compare_date_end = date_format(new DateTime($annonce['end_date']), 'Y-m-d');
         $oldAnnonce = $compare_date_now > $compare_date_end;
         $url = $annonce['image_url'];
-        if (isset($_GET['delete'])) {
-            if ($annonce['booked'] && !$oldAnnonce) {
-                $message = "Vous ne pouvez pas supprimer une annonce reservée.";
-            } else {
-               
-                $message = deleteAnnonce($id, $url);
+        if ($annonce['author'] === $_SESSION['id']) {
+            if (isset($_GET['delete'])) {
+                if ($annonce['booked'] && !$oldAnnonce) {
+                    $message = "Vous ne pouvez pas supprimer une annonce reservée.";
+                } else {
+                    $message = deleteAnnonce($id, $url);
+                }
+            } else if (isset($_POST['submit'])) {
+                if ($oldAnnonce) {
+                    $message = "Vous ne pouvez pas modifier une ancienne annonce.";
+                } else if ($annonce['booked']) {
+                    $message = "Vous ne pouvez pas modifier une annonce reservée.";
+                } else {
+                    $message = modifyAnnonce($id, $url);
+                }
             }
-        } else if (isset($_POST['submit'])) {
-            if ($oldAnnonce) {
-                $message = "Vous ne pouvez pas modifier une ancienne annonce.";
-            } else if ($annonce['booked']) {
-                $message = "Vous ne pouvez pas modifier une annonce reservée.";
-            } else {
-                $message = modifyAnnonce($id, $url);
-            }
+        } else {
+            $message = "Une erreur s'est produite. Vous ne pouvez pas effectuer cette action.";
         }
     }
 }
@@ -44,8 +47,8 @@ if (!empty($_GET['id'])) {
         
         <h2>Mon annonce</h2>
     </div>
-    <?php if (!empty($annonce)): ?>
-    <p>Réservée <?= $annonce['booked'] ? 'par '.$annonce['first_name'].' '.$annonce['last_name'] : ': non' ?> </p>
+    <?php if (!empty($annonce) && $annonce['author'] === $_SESSION['id']): ?>
+    <p>Réservée <?= $annonce['booked'] ? 'par :'.'<span class="proprietaire">'.$annonce['first_name'].' '.$annonce['last_name'].'</span>' : ': non' ?> </p>
     <p class="publish-date">Date de publication : <?= displayTimestamp($annonce['publish_date']) ?></p>
     <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]).'?id='.$annonce['id'].$old ?>" method="post" enctype="multipart/form-data">
     <?= isset($message) ? '<p class="error">'.$message.'</p>' : null ?>
