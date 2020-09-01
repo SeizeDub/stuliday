@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.php",
   "scripts": {
-    "start": "browser-sync start --proxy localhost/stuliday --files * --no-notify"
+    "start": "browser-sync start --proxy localhost/stuliday  --files '**/*' --no-notify"
   },
   "author": "",
   "license": "ISC",

@@ -8,13 +8,21 @@ require 'assets/nav.php';
 <section>
     <div class="title-row">
         <div class="title-menu">
-            <?php if (isset($_SESSION['id'])) { ?>
-            <a class="main-button" href="">Anciennes annonces</a>
+            <?php if (isset($_SESSION['id'])) {
+                if (isset($_GET['old'])): ?>
+                <a class="main-button" href="mes-annonces">Annonces actives</a>
+                <?php else: ?>
+                <a class="main-button" href="?old">Anciennes annonces</a>
+                <?php endif; ?>
             <a class="main-button" href="publier-annonce.php">Publier une annonce</a>
             <?php } ?>
         </div>
-        
-        <h2>Mes annonces</h2>
+        <?php if (isset($_GET['old'])): ?>
+        <h2>Mes anciennes annonces</h2>
+        <?php else: ?>
+        <h2>Mes annonces actives</h2>
+        <?php endif; ?>
+
     </div>
     <?php 
     if (isset($_SESSION['id'])):

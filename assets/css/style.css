@@ -54,6 +54,7 @@ header {
     align-items : center;
     position : sticky;
     top : 0px;
+    z-index : 2;
 }
 
 header h1 a{
@@ -91,9 +92,9 @@ nav ul {
     position : absolute;
     overflow: hidden;
     width : 100%;
-    top :-20px;
+    padding-top : 20px;
+    top :-100px;
     left : 0;
-    height : 110px;
     display : flex;
     flex-direction : column;
     justify-content: flex-end;
@@ -221,6 +222,14 @@ p {
     -webkit-line-clamp: 5;
 }
 
+#annonce {
+    background-color : unset;
+}
+
+#annonce p {
+    -webkit-line-clamp: unset;
+}
+
 .annonce-article .infos{
     display : block;
     color : grey;
@@ -231,6 +240,17 @@ p {
     font-weight : bold;
 }
 
+#annonce .price {
+    position : unset;
+    display : block;
+    margin-top : 20px;
+}
+#annonce .proprietaire {
+    display : block;
+    margin-top : 10px;
+    margin-bottom : 10px;
+    text-decoration : underline;
+}
 #login form {
     border-bottom : 2px dashed lightgrey;
 }
@@ -301,7 +321,12 @@ input:focus {
     margin-bottom : 20px;
 }
 
-
+.publish-date {
+    font-style : italic;
+    color : grey;
+    margin-bottom : 40px;
+    display : block;
+}
 
 
 
@@ -317,6 +342,7 @@ input:focus {
         --flow-space : 40px;
     }
     nav ul {
+        padding-top : unset;
         position : relative;
         top : unset;
         left : unset;
@@ -368,15 +394,50 @@ input:focus {
     .annonce-article p {
         -webkit-line-clamp: 3;
     }
+    #annonce {
+        position : relative;
+    }
+    #annonce h3 {
+        position: absolute;
+        top : 0px; 
+        left : 320px;
+    }
+    #annonce .infos {
+        position : absolute;
+        top : 2rem;
+        left : 320px;
+    }
+    #annonce .proprietaire {
+        position : absolute;
+        top : 4rem;
+        left : 320px;
+    }
+    #annonce .date {
+        position : absolute;
+        top : 8rem;
+        left : 320px;
+    }
+    #annonce .price {
+        position : absolute;
+        top : 9rem;
+        left : 320px;
+    }
+    #annonce p {
+        -webkit-line-clamp: unset;
+    }
     .annonce-article .price {
         position : absolute;
         bottom : 15px;
     }
     .title-menu {
         flex-direction : row;
+        justify-content : center;
     }
     .title-menu .main-button:not(:last-of-type) {
         margin-right : 20px;
+    }
+    .title-menu p + .main-button {
+        margin-left : 20px;
     }
 }
 

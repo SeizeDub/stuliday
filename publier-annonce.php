@@ -25,6 +25,7 @@ require 'assets/nav.php';
                 <option value="T2">T2</option>
                 <option value="T3+">T3+</option>
                 <option value="Maison">Maison</option>
+                <option value="Chambre">Chambre</option>
             </select>
         </fieldset>
         <fieldset>

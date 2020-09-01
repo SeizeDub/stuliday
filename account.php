@@ -9,7 +9,7 @@ require 'assets/nav.php';
     <div class="title-row">
         <div class="title-menu">
             <?php if (isset($_SESSION['id'])) {?>
-            <a class="main-button" href="">Mes réservations</a>
+            <a class="main-button" href="mes-reservations.php">Mes réservations</a>
             <a class="main-button" href="mes-annonces.php">Mes annonces</a>
             <?php } ?>
         </div>
